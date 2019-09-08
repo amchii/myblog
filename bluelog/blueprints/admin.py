@@ -213,13 +213,12 @@ def delete_comment(comment_id):
 @login_required
 @csrf.exempt
 def timemachine():
-    posts = Post.query.order_by(Post.timestamp.desc()).limit(3).all()
+    posts = Post.query.order_by(Post.timestamp.desc()).all()
     if request.method == 'POST':
-        print(request.form)
         for post_id, post_time in request.form.items():
-            print(post_id, post_time)
-            utc_time = datetime.strptime(post_time, '%Y-%m-%dT%H:%M') - timedelta(hours=8)
-            post = Post.query.get_or_404(int(post_id))
-            post.timestamp = utc_time
-            db.session.commit()
+            if post_time:
+                utc_time = datetime.strptime(post_time, '%Y-%m-%dT%H:%M') - timedelta(hours=8)
+                post = Post.query.get_or_404(int(post_id))
+                post.timestamp = utc_time
+                db.session.commit()
     return render_template('admin/timemachine.html', posts=posts)

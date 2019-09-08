@@ -1,9 +1,13 @@
-<form action="" method="post">
-    {% for post in posts %}
-        <label>{{ post.title }}({{ post.timestamp }})
-            <input name="{{ post.id }}" type="datetime-local">
-        </label>
-        <br><br>
-    {% endfor %}
-    <input type="submit">
-</form>
+{% extends 'base.html' %}
+{% block content %}
+    <form action="" method="post">
+        {% for post in posts %}
+            <label><h4><a href="{{ url_for('blog.show_post', post_id=post.id) }}">{{ post.title }}</a></h4>
+                [{{ post.timestamp }}]
+                <input name="{{ post.id }}" type="datetime-local">
+            </label>
+            <br><br>
+        {% endfor %}
+        <input class="btn btn-secondary btn-sm" type="submit" value="Travel">
+    </form>
+{% endblock %}
