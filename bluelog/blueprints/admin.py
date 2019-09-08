@@ -11,7 +11,7 @@ from bluelog.utils import redirect_back
 admin_bp = Blueprint('admin', __name__)
 
 
-@admin_bp.route('/settings')
+@admin_bp.route('/settings', methods=['GET', 'POST'])
 @login_required
 def settings():
     form = SettingForm()

@@ -7,7 +7,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <title>{% block title %}
-        {% endblock %} - {{ admin.blog_title|default('Bluelog') }}</title>
+        {% endblock %} - {{ admin.blog_title|default('MyBlog') }}</title>
         <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
         <link rel="stylesheet"
               href="{{ url_for('static', filename='css/%s.min.css' % request.cookies.get('theme','sketchy')) }}"
@@ -22,7 +22,7 @@
 {% block nav %}
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
-            <a class="navbar-brand" href="/">Bluelog</a>
+            <a class="navbar-brand" href="/">{{ admin.name|default('MyBlog') }}</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
                     aria-controls="navbarColor01" aria-expanded="false"
                     aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
