@@ -1,7 +1,9 @@
+from datetime import datetime, timedelta
+
 from flask import Blueprint, render_template, flash, redirect, url_for, request, current_app
 from flask_login import login_required, current_user
 
-from bluelog.extensions import db
+from bluelog.extensions import db, csrf
 from bluelog.forms import SettingForm, PostForm, CategoryForm, LinkForm
 from bluelog.models import Post, Category, Comment, Link
 from bluelog.utils import redirect_back
@@ -205,3 +207,19 @@ def delete_comment(comment_id):
     db.session.commit()
     flash('Comment deleted.', 'success')
     return redirect_back()
+
+
+@admin_bp.route('/timemachine', methods=['GET', 'POST'])
+@login_required
+@csrf.exempt
+def timemachine():
+    posts = Post.query.order_by(Post.timestamp.desc()).limit(3).all()
+    if request.method == 'POST':
+        print(request.form)
+        for post_id, post_time in request.form.items():
+            print(post_id, post_time)
+            utc_time = datetime.strptime(post_time, '%Y-%m-%dT%H:%M') - timedelta(hours=8)
+            post = Post.query.get_or_404(int(post_id))
+            post.timestamp = utc_time
+            db.session.commit()
+    return render_template('admin/timemachine.html', posts=posts)

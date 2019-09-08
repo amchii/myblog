@@ -46,7 +46,7 @@ class BaseConfig(object):
 
 class DevelopmentConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = prefix + os.path.join(basedir, 'data-dev.db')
-    EXPLAIN_TEMPLATE_LOADING = True
+    # EXPLAIN_TEMPLATE_LOADING = True
 
 
 class ProductionConfig(BaseConfig):
@@ -56,6 +56,8 @@ class ProductionConfig(BaseConfig):
 
 class TestingConfig(BaseConfig):
     TESTING = True
+    WTF_CSRF_ENABLED = False
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'  # in-memory database
 
 
 config = {

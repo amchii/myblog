@@ -2,9 +2,11 @@
 # -*- coding: utf-8 -*-
 # DateTime: 2019/5/8 9:23
 import os
+import logging
+from logging.handlers import RotatingFileHandler
 
 import click
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask_login import current_user
 from flask_wtf.csrf import CSRFError
 
@@ -36,8 +38,28 @@ def create_app(config_name=None):
     return app
 
 
-def register_logging(app):
-    pass
+def register_logging(app: Flask):
+    class RequestFormatter(logging.Formatter):
+
+        def format(self, record):
+            record.url = request.url
+            record.remote_addr = request.remote_addr
+            return super().format(record)
+
+    request_formatter = RequestFormatter(
+        '[%(asctime)s] %(remote_addr)s requested %(url)s\n'
+        '%(levelname)s in %(module)s: %(message)s'
+    )
+
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+    file_handler = RotatingFileHandler(os.path.join(basedir, 'logs/bluelog.log'), maxBytes=10 * 1024 * 1024,
+                                       backupCount=10)
+    file_handler.setFormatter(formatter)
+    file_handler.setLevel(logging.INFO)
+
+    if not app.debug:
+        app.logger.addHandler(file_handler)
 
 
 def register_extensions(app):

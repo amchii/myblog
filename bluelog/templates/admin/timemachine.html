@@ -1,0 +1,9 @@
+<form action="" method="post">
+    {% for post in posts %}
+        <label>{{ post.title }}({{ post.timestamp }})
+            <input name="{{ post.id }}" type="datetime-local">
+        </label>
+        <br><br>
+    {% endfor %}
+    <input type="submit">
+</form>

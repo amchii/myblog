@@ -31,7 +31,8 @@
                 href="{{ url_for('.show_category',category_id=post.category.id) }}">{{ post.category.name }}</a><br>#}
             Categories:
             {% for category in post.categories %}
-                <a href="{{ url_for('.show_category',category_id=category.id) }}">{{ category.name }}{% if not loop.last %}&comma;{% endif %}</a>
+                <a href="{{ url_for('.show_category',category_id=category.id) }}">{{ category.name }}
+                    {% if not loop.last %}&comma;{% endif %}</a>
             {% endfor %}
             <br>
             Date: {{ moment(post.timestamp).format('LL') }}
@@ -84,20 +85,6 @@
                                 <div class="d-flex w-100 justify-content-between">
                                     <h5 class="mb-1">
                                         <a href="
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                                 {% if comment.site %}{{ comment.site }}{% else %}javascript:void(0);{% endif %}"
                                            target="_blank">{% if comment.from_admin %}{{ admin.name }}{% else %}
                                             {{ comment.author }}{% endif %}</a>

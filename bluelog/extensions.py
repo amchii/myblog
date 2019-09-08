@@ -12,16 +12,18 @@ bootstrap = Bootstrap()
 mail = Mail()
 moment = Moment()
 ckeditor = CKEditor()
-login_manager=LoginManager()
-csrf=CSRFProtect()
-migrate=Migrate()
+login_manager = LoginManager()
+csrf = CSRFProtect()
+migrate = Migrate()
+
 
 @login_manager.user_loader
 def load_user(user_id):
     from bluelog.models import Admin
-    user=Admin.query.get(int(user_id))
+    user = Admin.query.get(int(user_id))
     return user
 
-login_manager.login_view='auth.login'
-login_manager.login_message_category='warning'
-login_manager.login_message='You need to log in.'
+
+login_manager.login_view = 'auth.login'
+login_manager.login_message_category = 'warning'
+login_manager.login_message = 'You need to log in.'
