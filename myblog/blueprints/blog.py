@@ -1,10 +1,10 @@
 from flask import render_template, Blueprint, request, current_app, url_for, flash, redirect, abort, make_response
 
-from bluelog.extensions import db
-from bluelog.emails import send_new_comment_email, send_new_reply_email
-from bluelog.models import Post, Category, Comment
-from bluelog.forms import CommentForm, AdminCommentForm
-from bluelog.utils import redirect_back
+from myblog.extensions import db
+from myblog.emails import send_new_comment_email, send_new_reply_email
+from myblog.models import Post, Category, Comment
+from myblog.forms import CommentForm, AdminCommentForm
+from myblog.utils import redirect_back
 from flask_login import current_user
 
 blog_bp = Blueprint('blog', __name__)

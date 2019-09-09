@@ -1,7 +1,7 @@
 from flask import Blueprint, url_for, redirect, flash, render_template
-from bluelog.models import Admin
-from bluelog.forms import LoginForm
-from bluelog.utils import redirect_back
+from myblog.models import Admin
+from myblog.forms import LoginForm
+from myblog.utils import redirect_back
 from flask_login import current_user, login_user, logout_user, login_required
 
 auth_bp = Blueprint('auth', __name__)

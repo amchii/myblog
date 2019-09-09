@@ -10,12 +10,12 @@ from flask import Flask, render_template, request
 from flask_login import current_user
 from flask_wtf.csrf import CSRFError
 
-from bluelog.blueprints.admin import admin_bp
-from bluelog.blueprints.blog import blog_bp
-from bluelog.blueprints.auth import auth_bp
-from bluelog.models import Admin, Category, Comment, Link
-from bluelog.settings import config
-from bluelog.extensions import bootstrap, db, moment, ckeditor, mail, login_manager, csrf, migrate
+from myblog.blueprints.admin import admin_bp
+from myblog.blueprints.blog import blog_bp
+from myblog.blueprints.auth import auth_bp
+from myblog.models import Admin, Category, Comment, Link
+from myblog.settings import config
+from myblog.extensions import bootstrap, db, moment, ckeditor, mail, login_manager, csrf, migrate
 
 basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
@@ -24,7 +24,7 @@ def create_app(config_name=None):
     if config_name is None:
         config_name = os.getenv('FLASK_CONFIG', 'development')
 
-    app = Flask('bluelog')
+    app = Flask('myblog')
     print('in app: ' + __name__)
     app.config.from_object(config[config_name])
     register_logging(app)
@@ -53,7 +53,7 @@ def register_logging(app: Flask):
 
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-    file_handler = RotatingFileHandler(os.path.join(basedir, 'logs/bluelog.log'), maxBytes=10 * 1024 * 1024,
+    file_handler = RotatingFileHandler(os.path.join(basedir, 'logs/myblog.log'), maxBytes=10 * 1024 * 1024,
                                        backupCount=10)
     file_handler.setFormatter(formatter)
     file_handler.setLevel(logging.INFO)
@@ -124,7 +124,7 @@ def register_commands(app: Flask):
     @click.option('--comment', default=500, help='Quantity of comments, default is 500.')
     def forge(category, post, comment):
         """Generates the fake categories, posts, comments and links."""
-        from bluelog.fakes import fake_admin, fake_categories, fake_posts, fake_comments, fake_links
+        from myblog.fakes import fake_admin, fake_categories, fake_posts, fake_comments, fake_links
 
         db.drop_all()
         db.create_all()

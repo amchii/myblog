@@ -3,7 +3,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, TextAreaField, ValidationError, \
     HiddenField, SelectMultipleField
 from wtforms.validators import DataRequired, Length, Email, URL, Optional
-from bluelog.models import Category
+from myblog.models import Category
 
 
 class LoginForm(FlaskForm):

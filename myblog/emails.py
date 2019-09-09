@@ -1,6 +1,6 @@
 from flask import url_for, current_app, render_template
 from flask_mail import Message
-from bluelog.extensions import mail
+from myblog.extensions import mail
 from threading import Thread
 
 

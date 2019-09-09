@@ -3,8 +3,8 @@ import random
 from faker import Faker
 from sqlalchemy.exc import IntegrityError
 
-from bluelog.models import Admin, Category, Post, Comment, Link
-from bluelog.extensions import db
+from myblog.models import Admin, Category, Post, Comment, Link
+from myblog.extensions import db
 
 fake = Faker()
 

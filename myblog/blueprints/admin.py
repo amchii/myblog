@@ -3,10 +3,10 @@ from datetime import datetime, timedelta
 from flask import Blueprint, render_template, flash, redirect, url_for, request, current_app
 from flask_login import login_required, current_user
 
-from bluelog.extensions import db, csrf
-from bluelog.forms import SettingForm, PostForm, CategoryForm, LinkForm
-from bluelog.models import Post, Category, Comment, Link
-from bluelog.utils import redirect_back
+from myblog.extensions import db, csrf
+from myblog.forms import SettingForm, PostForm, CategoryForm, LinkForm
+from myblog.models import Post, Category, Comment, Link
+from myblog.utils import redirect_back
 
 admin_bp = Blueprint('admin', __name__)
 
