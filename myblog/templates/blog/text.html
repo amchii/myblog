@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Text{% endblock %}
+
+{% block content %}
+    <p id="message" style="display: none;color:rgb(178, 201, 221)"></p>
+    <form action="" id="form" onsubmit="return formSubmit()">
+        <label>
+            <textarea name="text" maxlength="4096" rows="20" cols="80" placeholder="{{ text }}">{{ text }}</textarea>
+        </label>
+        <input class="btn btn-sm btn-secondary" type="submit" value="提交">
+    </form>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script>
+        function formSubmit() {
+            var
+                form = $('#form'),
+                textarea = $('textarea');
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    var message = $('#message');
+                    message.text(xhr.responseText);
+                    message.show();
+                }
+            };
+            xhr.open('POST', form.prop('action'));
+            xhr.setRequestHeader("Content-type", "application/json");
+            xhr.send(JSON.stringify({'text': textarea.val()}));
+            return false;
+        }
+    </script>
+{% endblock %}

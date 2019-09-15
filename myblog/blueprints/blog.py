@@ -1,11 +1,11 @@
 from flask import render_template, Blueprint, request, current_app, url_for, flash, redirect, abort, make_response
 
-from myblog.extensions import db
+from myblog.extensions import db, csrf
 from myblog.emails import send_new_comment_email, send_new_reply_email
 from myblog.models import Post, Category, Comment
 from myblog.forms import CommentForm, AdminCommentForm
 from myblog.utils import redirect_back
-from flask_login import current_user
+from flask_login import current_user, login_required
 
 blog_bp = Blueprint('blog', __name__)
 print('in blog: ' + __name__)
@@ -104,3 +104,17 @@ def send_email():
     post = Post.query.get(1)
     send_new_comment_email(post)
     return 'email is sending...'
+
+
+@blog_bp.route('/mytext', methods=['GET', 'POST'])
+@login_required
+@csrf.exempt
+def mytext():
+    if request.method == 'POST':
+        text = request.json['text']
+        with open('mytext', 'w', encoding='utf-8') as f:
+            f.write(text)
+        return '提交成功'
+    with open('mytext', 'r', encoding='utf-8') as f:
+        text = f.read()
+    return render_template('blog/text.html', text=text)
