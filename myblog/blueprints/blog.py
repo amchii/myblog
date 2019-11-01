@@ -38,6 +38,9 @@ def show_category(category_id):
 @blog_bp.route('/post/<int:post_id>', methods=['GET', 'POST'])
 def show_post(post_id):
     post = Post.query.get_or_404(post_id)
+    if post.private and not current_user.is_authenticated:
+        flash('你没有权限访问该文章！', 'warning')
+        return redirect(url_for('.index'))
     page = request.args.get('page', 1, type=int)
     per_page = current_app.config.get('BLUELOG_COMMENT_PER_PAGE', 15)
     pagination = Comment.query.with_parent(post).filter_by(reviewed=True).order_by(Comment.timestamp.asc()).paginate(

@@ -26,6 +26,7 @@ class PostForm(FlaskForm):
     # category = SelectField('Categories', coerce=int, default=1)
     categories = SelectMultipleField('Categories', coerce=int, default=1)
     body = CKEditorField('Body', validators=[DataRequired(), Length(max=10000)])
+    private = BooleanField('Private')
     submit = SubmitField()
 
     def __init__(self, *args, **kwargs):

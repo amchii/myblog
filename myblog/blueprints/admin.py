@@ -47,9 +47,10 @@ def new_post():
     if form.validate_on_submit():
         title = form.title.data
         body = form.body.data
+        private = form.private.data
         # category = Category.query.get(form.category.data)
         categories = [Category.query.get(i) for i in form.categories.data]
-        post = Post(title=title, body=body, categories=categories)
+        post = Post(title=title, body=body, private=private, categories=categories)
         db.session.add(post)
         db.session.commit()
         flash('Post created.', 'success')
@@ -65,6 +66,7 @@ def edit_post(post_id):
     if form.validate_on_submit():
         post.title = form.title.data
         post.body = form.body.data
+        post.private = form.private.data
         # post.category = Category.query.get(form.category.data)
         categories = [Category.query.get(i) for i in form.categories.data]
         post.categories = categories
@@ -73,6 +75,7 @@ def edit_post(post_id):
         return redirect(url_for('blog.show_post', post_id=post.id))
     form.title.data = post.title
     form.body.data = post.body
+    form.private.data = post.private
     form.categories.data = [category.id for category in post.categories]
     return render_template('admin/edit_post.html', form=form)
 

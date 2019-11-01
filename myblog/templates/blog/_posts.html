@@ -1,23 +1,26 @@
 {% if posts %}
     {% for post in posts %}
-        <h3 class="text-primary"><a href="{{ url_for('.show_post',post_id=post.id) }}">{{ post.title }}</a></h3>
-        <p>
-            {{ post.body|striptags|truncate }}
-            <small><a href="{{ url_for('.show_post',post_id=post.id) }}">Read More</a></small>
-        </p>
-        <small>
-            Comments: <a href="{{ url_for('.show_post',post_id=post.id) }}#comments">{{ post.comments|length }}</a>
-            {#Category: <a
+        {% if not post.private or current_user.is_authenticated %}
+            <h3 class="text-primary"><a href="{{ url_for('.show_post',post_id=post.id) }}">{{ post.title }}</a></h3>
+            <p>
+                {{ post.body|striptags|truncate }}
+                <small><a href="{{ url_for('.show_post',post_id=post.id) }}">Read More</a></small>
+            </p>
+            <small>
+                Comments: <a href="{{ url_for('.show_post',post_id=post.id) }}#comments">{{ post.comments|length }}</a>
+                {#Category: <a
                 href="{{ url_for('.show_category',category_id=post.category.id) }}">{{ post.category.name }}</a>#}
-            Categories:
-            {% for category in post.categories %}
-                <a href="{{ url_for('.show_category',category_id=category.id) }}">{{ category.name }}{% if not loop.last %}&comma;{% endif %}</a>
-            {% endfor %}
+                Categories:
+                {% for category in post.categories %}
+                    <a href="{{ url_for('.show_category',category_id=category.id) }}">{{ category.name }}
+                            {% if not loop.last %}&comma;{% endif %}</a>
+                {% endfor %}
 
-            <span class="float-right">{{ moment(post.timestamp).format('LL') }}</span>
-        </small>
-        {% if not loop.last %}
-            <hr>
+                <span class="float-right">{{ moment(post.timestamp).format('LL') }}</span>
+            </small>
+            {% if not loop.last %}
+                <hr>
+            {% endif %}
         {% endif %}
     {% endfor %}
 {% else %}
