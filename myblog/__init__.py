@@ -15,17 +15,25 @@ from myblog.blueprints.blog import blog_bp
 from myblog.blueprints.auth import auth_bp
 from myblog.models import Admin, Category, Comment, Link
 from myblog.settings import config
-from myblog.extensions import bootstrap, db, moment, ckeditor, mail, login_manager, csrf, migrate
+from myblog.extensions import (
+    bootstrap,
+    db,
+    moment,
+    ckeditor,
+    mail,
+    login_manager,
+    csrf,
+    migrate,
+)
 
 basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
 
 def create_app(config_name=None):
     if config_name is None:
-        config_name = os.getenv('FLASK_CONFIG', 'development')
+        config_name = os.getenv("FLASK_CONFIG", "development")
 
-    app = Flask('myblog')
-    print('in app: ' + __name__)
+    app = Flask("myblog")
     app.config.from_object(config[config_name])
     register_logging(app)
     register_extensions(app)
@@ -40,21 +48,25 @@ def create_app(config_name=None):
 
 def register_logging(app: Flask):
     class RequestFormatter(logging.Formatter):
-
         def format(self, record):
             record.url = request.url
             record.remote_addr = request.remote_addr
             return super().format(record)
 
     request_formatter = RequestFormatter(
-        '[%(asctime)s] %(remote_addr)s requested %(url)s\n'
-        '%(levelname)s in %(module)s: %(message)s'
+        "[%(asctime)s] %(remote_addr)s requested %(url)s\n"
+        "%(levelname)s in %(module)s: %(message)s"
     )
 
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter(
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    )
 
-    file_handler = RotatingFileHandler(os.path.join(basedir, 'logs/myblog.log'), maxBytes=10 * 1024 * 1024,
-                                       backupCount=10)
+    file_handler = RotatingFileHandler(
+        os.path.join(basedir, "logs/myblog.log"),
+        maxBytes=10 * 1024 * 1024,
+        backupCount=10,
+    )
     file_handler.setFormatter(formatter)
     file_handler.setLevel(logging.INFO)
 
@@ -75,8 +87,8 @@ def register_extensions(app):
 
 def register_blueprints(app):
     app.register_blueprint(blog_bp)
-    app.register_blueprint(admin_bp, url_prefix='/admin')
-    app.register_blueprint(auth_bp, url_prefix='/auth')
+    app.register_blueprint(admin_bp, url_prefix="/admin")
+    app.register_blueprint(auth_bp, url_prefix="/auth")
 
 
 def register_shell_context(app: Flask):
@@ -95,90 +107,110 @@ def register_template_context(app: Flask):
             unread_comments = Comment.query.filter_by(reviewed=False).count()
         else:
             unread_comments = None
-        return dict(admin=admin, categories=categories, links=links, unread_comments=unread_comments)
+        return dict(
+            admin=admin,
+            categories=categories,
+            links=links,
+            unread_comments=unread_comments,
+        )
 
 
 def register_errors(app: Flask):
     @app.errorhandler(400)
     def bad_request(e):
-        return render_template('errors/400.html'), 400
+        return render_template("errors/400.html"), 400
 
     @app.errorhandler(404)
     def page_not_found(e):
-        return render_template('errors/404.html'), 404
+        return render_template("errors/404.html"), 404
 
     @app.errorhandler(500)
     def internal_server_error(e):
-        return render_template('errors/500.html'), 500
+        return render_template("errors/500.html"), 500
 
     @app.errorhandler(CSRFError)
     def handle_csrf_error(e):
-        return render_template('errors/400.html', description=e.description), 400
+        return render_template("errors/400.html", description=e.description), 400
 
 
 def register_commands(app: Flask):
     # flask forge
     @app.cli.command()
-    @click.option('--category', default=10, help='Quantity of categories, default is 10.')
-    @click.option('--post', default=50, help='Quantity of posts, default is 50.')
-    @click.option('--comment', default=500, help='Quantity of comments, default is 500.')
+    @click.option(
+        "--category", default=10, help="Quantity of categories, default is 10."
+    )
+    @click.option("--post", default=50, help="Quantity of posts, default is 50.")
+    @click.option(
+        "--comment", default=500, help="Quantity of comments, default is 500."
+    )
     def forge(category, post, comment):
         """Generates the fake categories, posts, comments and links."""
-        from myblog.fakes import fake_admin, fake_categories, fake_posts, fake_comments, fake_links
+        from myblog.fakes import (
+            fake_admin,
+            fake_categories,
+            fake_posts,
+            fake_comments,
+            fake_links,
+        )
 
         db.drop_all()
         db.create_all()
 
-        click.echo('Generating the administrator...')
+        click.echo("Generating the administrator...")
         fake_admin()
 
-        click.echo('Generating %d categories...' % category)
+        click.echo("Generating %d categories..." % category)
         fake_categories(category)
 
-        click.echo('Generating %d posts...' % post)
+        click.echo("Generating %d posts..." % post)
         fake_posts(post)
 
-        click.echo('Generating %d comments...' % comment)
+        click.echo("Generating %d comments..." % comment)
         fake_comments(comment)
 
-        click.echo('Generating links...')
+        click.echo("Generating links...")
         fake_links()
 
-        click.echo('Done.')
+        click.echo("Done.")
 
     # flask init
     @app.cli.command()
-    @click.option('--username', prompt=True, help='The username used to login.')
+    @click.option("--username", prompt=True, help="The username used to login.")
     # 可以使用@click.password_option()
-    @click.option('--password', prompt=True, hide_input=True, confirmation_prompt=True,
-                  help='The password used to login.')
+    @click.option(
+        "--password",
+        prompt=True,
+        hide_input=True,
+        confirmation_prompt=True,
+        help="The password used to login.",
+    )
     def init(username, password):
-        """Building Bluelog, just for you."""
-        click.echo('Initializing the database...')
+        """Building Blog, just for you."""
+        click.echo("Initializing the database...")
         db.create_all()
 
         admin = Admin.query.first()
         if admin:
-            click.echo('The administrator already exists, updating... ')
+            click.echo("The administrator already exists, updating... ")
             admin.username = username
             admin.set_password(password)
         else:
-            click.echo('Creating the temporary administrator account...')
+            click.echo("Creating the temporary administrator account...")
             admin = Admin(
                 username=username,
-                blog_title='Bluelog',
+                blog_title="Blog",
                 blog_sub_title="No, I'm the real thing.",
-                name='Admin',
-                about='Anything about you.'
+                name="Admin",
+                about="Anything about you.",
             )
             admin.set_password(password)
             db.session.add(admin)
 
         category = Category.query.first()
         if not category:
-            click.echo('Creating the default category... ')
-            category = Category(name='Default')
+            click.echo("Creating the default category... ")
+            category = Category(name="Default")
             db.session.add(category)
 
         db.session.commit()
-        click.echo('Done.')
+        click.echo("Done.")

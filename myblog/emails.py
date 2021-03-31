@@ -19,12 +19,24 @@ def send_email(subject, to, html):
 
 
 def send_new_comment_email(post):
-    post_url = url_for('blog.show_post', post_id=post.id, _external=True) + '#comments'
-    send_email(subject='New comment', to=current_app.config['BLUELOG_EMAIL'],
-               html=render_template('email/new_comment.html', post_title=post.title, post_url=post_url))
+    post_url = url_for("blog.show_post", post_id=post.id, _external=True) + "#comments"
+    send_email(
+        subject="New comment",
+        to=current_app.config["BLOG_EMAIL"],
+        html=render_template(
+            "email/new_comment.html", post_title=post.title, post_url=post_url
+        ),
+    )
 
 
 def send_new_reply_email(comment):
-    post_url = url_for('blog.show_post', post_id=comment.post_id, _external=True) + '#comments'
-    send_email(subject='New reply', to=comment.email,
-               html=render_template('email/new_reply.html', post_title=comment.post.title, post_url=post_url))
+    post_url = (
+        url_for("blog.show_post", post_id=comment.post_id, _external=True) + "#comments"
+    )
+    send_email(
+        subject="New reply",
+        to=comment.email,
+        html=render_template(
+            "email/new_reply.html", post_title=comment.post.title, post_url=post_url
+        ),
+    )

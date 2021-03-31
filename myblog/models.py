@@ -23,9 +23,9 @@ class Admin(db.Model, UserMixin):
 
 
 category_post_table = db.Table(
-    'category_post',
-    db.Column('category_id', db.Integer, db.ForeignKey('category.id')),
-    db.Column('post_id', db.Integer, db.ForeignKey('post.id'))
+    "category_post",
+    db.Column("category_id", db.Integer, db.ForeignKey("category.id")),
+    db.Column("post_id", db.Integer, db.ForeignKey("post.id")),
 )
 
 
@@ -33,7 +33,9 @@ class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30), unique=True)
     # posts = db.relationship('Post', back_populates='category')
-    posts = db.relationship('Post', secondary=category_post_table, back_populates='categories')
+    posts = db.relationship(
+        "Post", secondary=category_post_table, back_populates="categories"
+    )
 
     def delete(self):
         default_category = Category.query.get(1)
@@ -52,8 +54,12 @@ class Post(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.utcnow, index=True)
     # category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
     # category = db.relationship('Category', back_populates='posts')
-    categories = db.relationship('Category', secondary=category_post_table, back_populates='posts')
-    comments = db.relationship('Comment', back_populates='post', cascade='all, delete-orphan')
+    categories = db.relationship(
+        "Category", secondary=category_post_table, back_populates="posts"
+    )
+    comments = db.relationship(
+        "Comment", back_populates="post", cascade="all, delete-orphan"
+    )
 
 
 class Comment(db.Model):
@@ -65,11 +71,11 @@ class Comment(db.Model):
     from_admin = db.Column(db.Boolean, default=False)
     reviewed = db.Column(db.Boolean, default=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow, index=True)
-    post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
-    post = db.relationship('Post', back_populates='comments')
-    replied_id = db.Column(db.Integer, db.ForeignKey('comment.id'))
-    replied = db.relationship('Comment', back_populates='replies', remote_side=[id])
-    replies = db.relationship('Comment', back_populates='replied', cascade='all')
+    post_id = db.Column(db.Integer, db.ForeignKey("post.id"))
+    post = db.relationship("Post", back_populates="comments")
+    replied_id = db.Column(db.Integer, db.ForeignKey("comment.id"))
+    replied = db.relationship("Comment", back_populates="replies", remote_side=[id])
+    replies = db.relationship("Comment", back_populates="replied", cascade="all")
 
 
 class Link(db.Model):
