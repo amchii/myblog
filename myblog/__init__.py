@@ -3,7 +3,7 @@
 # DateTime: 2019/5/8 9:23
 import os
 import logging
-from logging.handlers import RotatingFileHandler
+from logging.handlers import RotatingFileHandler, SMTPHandler
 
 import click
 from flask import Flask, render_template, request
@@ -69,9 +69,19 @@ def register_logging(app: Flask):
     )
     file_handler.setFormatter(formatter)
     file_handler.setLevel(logging.INFO)
+    mail_handler = SMTPHandler(
+        mailhost=app.config["MAIL_SERVER"],
+        fromaddr=app.config["MAIL_USERNAME"],
+        toaddrs=["ADMIN_EMAIL"],
+        subject="Bluelog Application Error",
+        credentials=(app.config["MAIL_USERNAME"], app.config["MAIL_PASSWORD"]),
+    )
+    mail_handler.setLevel(logging.ERROR)
+    mail_handler.setFormatter(request_formatter)
 
     if not app.debug:
         app.logger.addHandler(file_handler)
+        # app.logger.addHandler(mail_handler)
 
 
 def register_extensions(app):
