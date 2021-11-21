@@ -34,9 +34,10 @@ class BaseConfig(object):
     BLOG_THEMES = {
         "sketchy": "Sketchy",
         "lux": "LUX",
-        "meteria": "Meteria",
+        "materia": "Materia",
         "flatly": "Flatly",
         "black_swan": "Black Swan",
+        "lumen": "Lumen",
     }
     BLOG_SLOW_QUERY_THRESHOLD = 1
 
